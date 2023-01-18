@@ -1,0 +1,32 @@
+﻿<Window x:Class="TeamViewerServer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TeamViewerServer"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <StackPanel>
+        <Border BorderBrush="Green" 
+                CornerRadius="10"
+                Width="150"
+                BorderThickness="1"
+                Margin="0,10,0,20"
+                >
+            <Button Command="{Binding StartServerCommand}" HorizontalAlignment="Left" 
+                FontSize="20"
+                Margin="20,0">Start Server</Button>
+        </Border>
+        <ListView Background="White" ItemsSource="{Binding AllClients,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <TextBlock VerticalAlignment="Top" FontSize="22" HorizontalAlignment="Center" Text="{Binding Title,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ></TextBlock>
+                        <Image Source="{Binding ImagePath,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="200" Height="200" ></Image>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+    </StackPanel>
+</Window>

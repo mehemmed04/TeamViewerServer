@@ -1,0 +1,15 @@
+﻿<Application x:Class="TeamViewerServer.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:TeamViewerServer"
+             StartupUri="Views/MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Dictionaires/ListViewDictionary.xaml"> </ResourceDictionary>
+                <ResourceDictionary Source="Dictionaires/ScrollBarDictionary.xaml">   </ResourceDictionary>
+                <ResourceDictionary Source="Dictionaires/ButtonDictionary.xaml">      </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
