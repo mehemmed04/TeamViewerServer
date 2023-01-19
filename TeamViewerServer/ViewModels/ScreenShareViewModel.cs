@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -34,30 +36,29 @@ namespace TeamViewerServer.ViewModels
             Client = client;
             ImagePath = Client.ImagePath;
 
-           
+
 
             Task.Run(async () =>
             {
                 while (true)
                 {
-                    await Task.Run(async () =>
+                    await Task.Run(() =>
                     {
                         var stream = Client.TcpClient.GetStream();
-                        var br = new BinaryReader(stream);
-                        var bytes = new byte[500000];
                         bool cc = true;
+                        byte[] data = new byte[500000];
                         while (cc)
                         {
-                            var bb = Task.Run(async () =>
+                            var bb = Task.Run(() =>
                             {
                                 try
                                 {
-                                    bytes = br.ReadBytes(500000);
-                                    var path = ImageHelper.SaveAndGetImagePath(bytes);
+                                    stream.Read(data,0,data.Length);
+                                    var path = ImageHelper.SaveAndGetImagePath(data);
                                     ImagePath = path;
                                     cc = false;
                                 }
-                                catch (Exception ex)
+                                catch (Exception)
                                 {
 
                                 }
@@ -65,7 +66,6 @@ namespace TeamViewerServer.ViewModels
                         }
                     });
                 }
-                MessageBox.Show("Session Finished");
 
             });
 

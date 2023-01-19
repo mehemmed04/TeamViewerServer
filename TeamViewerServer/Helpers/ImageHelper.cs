@@ -35,7 +35,9 @@ namespace TeamViewerServer.Helpers
                 int minute =date.Minute;
                 int second =date.Second;
                 int msecond = date.Millisecond;
-                path = path + $@"\image{year}{month}{day}{hour}{minute}{second}{msecond}.jpg";
+                Random rand = new Random();
+                int random = rand.Next(10000000);
+                path = path + $@"\image{year}{month}{day}{hour}{minute}{second}{msecond}{random}.jpg";
                 ImageCodecInfo codec = ImageCodecInfo.GetImageEncoders().First(c => c.FormatID == ImageFormat.Jpeg.Guid);
                 EncoderParameters encoderParams = new EncoderParameters(1);
                 encoderParams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 50L);
