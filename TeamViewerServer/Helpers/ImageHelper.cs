@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -20,7 +21,11 @@ namespace TeamViewerServer.Helpers
             {
                 Bitmap bitmap1 = new Bitmap(img);
 
-                var path = "../../Images/";
+                DirectoryInfo di = new DirectoryInfo(Directory.GetCurrentDirectory());
+
+                var path = di.Parent.Parent.FullName;
+
+                path =path + $@"\Images";
                 Directory.CreateDirectory(path);
                 DateTime date = DateTime.Now;
                 int year = date.Year;
@@ -30,10 +35,14 @@ namespace TeamViewerServer.Helpers
                 int minute =date.Minute;
                 int second =date.Second;
                 int msecond = date.Millisecond;
-                path = path + $"/image{year}{month}{day}{hour}{minute}{second}{msecond}.png";
-                bitmap1.Save(path);
-                var imagepath = path;
-                return imagepath;
+                path = path + $@"\image{year}{month}{day}{hour}{minute}{second}{msecond}.jpg";
+
+                ImageCodecInfo codec = ImageCodecInfo.GetImageEncoders().First(c => c.FormatID == ImageFormat.Jpeg.Guid);
+                EncoderParameters encoderParams = new EncoderParameters(1);
+                encoderParams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 50L);
+                bitmap1.Save(path, codec, encoderParams);
+
+                return path;
             }
             else
             {

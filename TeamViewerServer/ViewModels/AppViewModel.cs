@@ -10,6 +10,7 @@ using TeamViewerServer.Commands;
 using TeamViewerServer.Helpers;
 using TeamViewerServer.Models;
 using TeamViewerServer.NetworkHelper;
+using TeamViewerServer.Views;
 
 namespace TeamViewerServer.ViewModels
 {
@@ -17,6 +18,7 @@ namespace TeamViewerServer.ViewModels
     {
 
         public RelayCommand StartServerCommand { get; set; }
+        public RelayCommand OpenScreenShareCommand { get; set; }
         private ObservableCollection<Client> allClients;
 
         public ObservableCollection<Client> AllClients
@@ -25,8 +27,26 @@ namespace TeamViewerServer.ViewModels
             set { allClients = value; OnPropertyChanged(); }
         }
 
+        private Client selectedClient;
+
+        public Client SelectedClient
+        {
+            get { return selectedClient; }
+            set { selectedClient = value; OnPropertyChanged(); }
+        }
+
+
         public AppViewModel()
         {
+
+            OpenScreenShareCommand = new RelayCommand((o) =>
+            {
+                ScreenShareViewModel vm = new ScreenShareViewModel(SelectedClient);
+                ScreenShareWindow sv = new ScreenShareWindow();
+                sv.DataContext = vm;
+                sv.Show();
+            });
+
             StartServerCommand = new RelayCommand((o) =>
             {
                 Task.Run(() =>
@@ -48,41 +68,18 @@ namespace TeamViewerServer.ViewModels
                         {
 
                         }
+                    }
+                });
 
-                        Task.Run(() =>
-                        {
-                            var reader = Task.Run(() =>
-                            {
 
-                                foreach (var item in Network.Clients)
-                                {
-                                    Task.Run(() =>
-                                    {
-                                        var stream = item.GetStream();
-                                        Network.br = new BinaryReader(stream);
-                                        var bytes = new byte[500000];
-                                        while (true)
-                                        {
-                                            try
-                                            {
-
-                                                bytes = Network.br.ReadBytes(50000);
-                                                // var client = AllClients.FirstOrDefault((c) => { return c.TcpClient == item; });
-                                                // var path = ImageHelper.SaveAndGetImagePath(bytes);
-                                                //// client.ImagePath = path;
-                                            }
-                                            catch (Exception ex)
-                                            {
-
-                                                // MessageBox.Show($"{item.Client.RemoteEndPoint}  disconnected");
-                                                Network.Clients.Remove(item);
-                                            }
-                                        }
-                                    }).Wait(50);
-                                }
-                            });
-
-                        });
+                Task.Run(() =>
+                {
+                    while (true)
+                    {
+                        DirectoryInfo di = new DirectoryInfo(Directory.GetCurrentDirectory());
+                        var path = di.Parent.Parent.FullName;
+                        path = path + $@"\Images";
+                        DeleteFileHeper.DeleteLastImages(path, 500);
                     }
                 });
 
@@ -104,7 +101,7 @@ namespace TeamViewerServer.ViewModels
                                     {
                                         TcpClient = c,
                                         Title = "Monitor " + c.Client.RemoteEndPoint.ToString(),
-                                        ImagePath = "../../Images/defaultimage.png"
+                                        ImagePath = "../../DefaultImages/defaultimage.png"
                                     });
                                 }
                             });
