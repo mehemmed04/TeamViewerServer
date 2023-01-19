@@ -10,18 +10,24 @@ namespace TeamViewerServer.Helpers
 {
     public class DeleteFileHeper
     {
-        public static void DeleteLastImages(string path,int seconds)
+        public static void DeleteLastImages(string directoryPath, int seconds)
         {
-            seconds = -1 * seconds;
-            DirectoryInfo folderInfo = new DirectoryInfo(path);
 
-            foreach (FileInfo file in folderInfo.GetFiles())
+            seconds = -1 * seconds;
+            string[] files = Directory.GetFiles(directoryPath);
+
+            foreach (string file in files)
             {
-                if (file.CreationTime.Date < DateTime.Now.AddMilliseconds(seconds))
+                DateTime creationTime = File.GetCreationTime(file);
+
+                if (creationTime < DateTime.Now.AddSeconds(seconds))
                 {
-                    file.Delete();
+                    // Delete the file
+                    File.Delete(file);
                 }
             }
+
+
         }
     }
 }
