@@ -42,28 +42,41 @@ namespace TeamViewerServer.ViewModels
             {
                 while (true)
                 {
+                    byte[] bytes = new byte[5000000];
                     await Task.Run(() =>
                     {
                         var stream = Client.TcpClient.GetStream();
-                        bool cc = true;
-                        byte[] data = new byte[500000];
-                        while (cc)
-                        {
-                            var bb = Task.Run(() =>
-                            {
-                                try
-                                {
-                                    stream.Read(data,0,data.Length);
-                                    var path = ImageHelper.SaveAndGetImagePath(data);
-                                    ImagePath = path;
-                                    cc = false;
-                                }
-                                catch (Exception)
-                                {
 
-                                }
-                            }).Wait(1);
+                        int i;
+                        while ((i = stream.Read(bytes, 0, bytes.Length)) != 0)
+                        {
+
+                            ImageHelper imageHelper = new ImageHelper();
+                            var path = ImageHelper.SaveAndGetImagePath(bytes);
+                            ImagePath = path;
                         }
+
+
+                        //bool cc = true;
+                        //while (cc)
+                        //{
+                        //    var bb = Task.Run(() =>
+                        //    {
+                        //        try
+                        //        {
+                        //            byte[] data = new byte[500000];
+                        //            stream.Read(data, 0, data.Length);
+                        //            var path = ImageHelper.SaveAndGetImagePath(data);
+                        //            ImagePath = path;
+
+                        //            cc = false;
+                        //        }
+                        //        catch (Exception)
+                        //        {
+
+                        //        }
+                        //    }).Wait(1);
+                        //}
                     });
                 }
 
@@ -72,3 +85,4 @@ namespace TeamViewerServer.ViewModels
         }
     }
 }
+
